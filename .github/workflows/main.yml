@@ -1,0 +1,26 @@
+name: CI/CD with GCC
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install GCC
+      run: sudo apt-get install -y g++ clang-tidy
+
+    - name: Build
+      run: g++ main.cpp -o my_program
+
+    - name: Test
+      run: ./my_program
