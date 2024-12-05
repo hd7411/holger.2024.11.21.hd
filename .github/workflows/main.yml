@@ -9,6 +9,12 @@ on:
       - main
 
 jobs:
+  init:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set env
+      run: echo "GITHUB_DATE_STRING=$(date +%Y.%m.%d)" >> $GITHUB_ENV
+
   build:
     runs-on: ubuntu-latest
 
@@ -35,13 +41,13 @@ jobs:
       run: ./main_holger
 
     - name: Zip the executable
-      run: zip setup_main_holger.zip main_holger
+      run: zip setup_main_holger.${{env.GITHUB_DATE_STRING}}.zip main_holger
       
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
-        name: setup-zip
-        path: ./setup_main_holger.zip
+        name: setup_main_holger.${{env.GITHUB_DATE_STRING}}.release.zip
+        path: ./main_holger
 
   release:
     needs: build
@@ -51,7 +57,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v4
       with:
-        name: setup-zip
+        name: setup_main_holger.${{env.GITHUB_DATE_STRING}}.release.zip
     
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1  
