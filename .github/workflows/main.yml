@@ -23,7 +23,16 @@ jobs:
       run: pwd; find . -name .clang-tidy; clang-tidy main.cpp --config-file=./.github/workflows/.clang-tidy -- -std=c++17
 
     - name: Build
-      run: g++ main.cpp -o my_program
+      run: g++ main.cpp -o main_holger
 
     - name: Test
-      run: ./my_program
+      run: ./main_holger
+
+    - name: Zip the executable
+      run: zip setup_main_holger.zip main_holger
+      
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: setup-zip
+        path: ./setup_main_holger.zip
