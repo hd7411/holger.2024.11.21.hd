@@ -9,10 +9,27 @@ on:
       - main
 
 jobs:
-  build:
+  init:
     runs-on: ubuntu-latest
+    outputs:
+      date_string_output: ${{ steps.date_string_id.outputs.DATE_STRING }}
 
     steps:
+    - name: Set env
+      id: date_string_id
+      run: echo "DATE_STRING=$(date +%Y.%m.%d)" >> $GITHUB_OUTPUT
+
+  build:
+    needs: [init]
+    runs-on: ubuntu-latest
+    env: 
+      DATE_STRING: ${{ needs.init.outputs.date_string_output }}
+
+    steps:
+
+    - name: display context information
+      run: echo $DATE_STRING
+
     - name: Checkout code
       uses: actions/checkout@v2
 
@@ -35,23 +52,25 @@ jobs:
       run: ./main_holger
 
     - name: Zip the executable
-      run: zip setup_main_holger.zip main_holger
+      run: zip setup_main_holger.$DATE_STRING.zip main_holger
       
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
-        name: setup-zip
-        path: ./setup_main_holger.zip
+        name: setup_main_holger.$DATE_STRING.release.zip
+        path: ./main_holger
 
   release:
     needs: build
     runs-on: ubuntu-latest
+    env: 
+      DATE_STRING: ${{ needs.init.outputs.date_string_output }}
     
     steps:
     - name: Download build artifact
       uses: actions/download-artifact@v4
       with:
-        name: setup-zip
+        name: setup_main_holger.$DATE_STRING.release.zip
     
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1  
