@@ -25,6 +25,9 @@ jobs:
     - name: Run Clang-Tidy
       run: clang-tidy main.cpp --config-file=./.github/workflows/.clang-tidy -- -std=c++17
 
+    - name: Run Clang-Tidy-Kai
+      run: clang-tidy main.cpp --config-file=./.github/workflows/.clang-tidy.kai -- -std=c++17
+
     - name: Build
       run: g++ main.cpp -o main_holger
 
