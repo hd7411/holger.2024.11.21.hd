@@ -9,5 +9,4 @@ Checks: >
   misc-*,
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
-AnalyzeTemporaryDtors: true
 FormatStyle: llvm
