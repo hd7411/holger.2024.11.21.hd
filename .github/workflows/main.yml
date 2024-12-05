@@ -36,3 +36,23 @@ jobs:
       with:
         name: setup-zip
         path: ./setup_main_holger.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Download build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: setup-zip
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1  
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKENWITHALLRIGHTS_FROM_HD7411 }}
+      with:
+        tag_name: v1.0.${{ github.run_number }}
+        name: "Release v1.0.${{ github.run_number }}"
+        draft: false
+        prerelease: false
