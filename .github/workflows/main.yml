@@ -20,7 +20,7 @@ jobs:
       run: sudo apt-get install -y g++ clang-tidy
 
     - name: Run Clang-Tidy-Version
-      run: pwd; clang_tidy --version; find . -name .clang-tidy;
+      run: pwd; clang-tidy --version; find . -name .clang-tidy;
     
     - name: Run Clang-Tidy
       run: clang-tidy main.cpp --config-file=./.github/workflows/.clang-tidy -- -std=c++17
