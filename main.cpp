@@ -1,5 +1,6 @@
 #include <iostream>
 #include <list>
+#include <cassert>
 
 //using namespace std;
 
@@ -46,22 +47,28 @@ class PersistorList: public Persistor {
 		}
 
 		UrlObject* getUrlObjWithShortUrl(ShortUrl short_url) {
-			std::cout << "Not Yet implemented" << std::endl;
-			return new UrlObject (LongUrl ("not yet Implemented"));
-
+			for (UrlObject* const& listIter : urlObjectLst) {
+				if (listIter->getShortUrl() == short_url) {
+					return listIter;
+				}
+			}
+			std::cout << "No Url obj for this short URL found: " << short_url << std::endl;
+			return NULL;
 		}
+
 		UrlObject* getUrlObjWithLongUrl(LongUrl long_url) {
 			for (UrlObject* const& listIter : urlObjectLst) {
 				if (listIter->getLongUrl() == long_url) {
 					return listIter;
 				}
 			}
+			std::cout << "No Url obj for this long URL found: " << long_url << std::endl;
 			return NULL;
 		}
 
 		void listAllEntries () {
 			for (UrlObject* const& listIter : urlObjectLst) {
-				std::cout << "Long Url: " << listIter->getLongUrl() << " : Short Url: " << listIter->getShortUrl() << std::endl;
+				std::cout << "List: Long Url: " << listIter->getLongUrl() << " : Short Url: " << listIter->getShortUrl() << std::endl;
 			}
 		}
 
@@ -71,20 +78,19 @@ class PersistorList: public Persistor {
 class UrlManager {
 	private:
 		std::list <UrlObject*> urlObjectLst;
+		Persistor* persistor_m;
 
 	public:
+	UrlManager (Persistor* persistor) : persistor_m{persistor} {}
 
 	UrlObject* convertLongUrlToShort (const LongUrl longUrl) {
-		urlObjectLst.push_back(new UrlObject (longUrl)) ;
-		return urlObjectLst.back();
+		persistor_m->addUrlObj(new UrlObject (longUrl)) ;
+		return persistor_m->getUrlObjWithLongUrl(longUrl);
 	}
 
-	UrlObject* convertShortUrlToLong (const LongUrl longUrl) {
-		urlObjectLst.push_back(new UrlObject (longUrl)) ;
-		return urlObjectLst.back();
+	UrlObject* convertShortUrlToLong (const ShortUrl short_url) {
+		return persistor_m->getUrlObjWithShortUrl(short_url);
 	}
-
-
 };
 
 
@@ -101,13 +107,26 @@ auto  main() -> int
 	std::cout << "Test: " <<  bb->getLongUrl() << bb->getShortUrl() << std::endl;
 
 
-	// basis Funktionalitaet & check
-	UrlManager urlManager = UrlManager ();
+	std::cout << "Basic functionality & check" << std::endl;
+	Persistor* listPersitor = new PersistorList();
+	UrlManager urlManager = UrlManager (listPersitor);
 
 	LongUrl longUrl = LongUrl ("https://lange.url");
 
-	UrlObject* urlObj = urlManager.convertLongUrlToShort(longUrl);
-	std::cout << "ShortUrl :" << urlObj->getShortUrl() << std::endl;
+	UrlObject* urlObj_1 = urlManager.convertLongUrlToShort(longUrl);
+	std::cout << "ShortUrl 1: " << urlObj_1->getShortUrl() << std::endl;
+	std::cout << "LongUrl  1: " << urlObj_1->getLongUrl() << std::endl;
+
+	ShortUrl su = urlObj_1->getShortUrl();
+	listPersitor->listAllEntries();
+
+	UrlObject* urlObj_2 = urlManager.convertShortUrlToLong(su);
+	std::cout << "ShortUrl 2: " << urlObj_2->getShortUrl() << std::endl;
+	std::cout << "LongUrl  2: " << urlObj_2->getLongUrl() << std::endl;
+
+	assert (urlObj_1->getLongUrl() == urlObj_2->getLongUrl());
+	assert (urlObj_1->getShortUrl() == urlObj_2->getShortUrl());
+
 
 	return 0;
 }
