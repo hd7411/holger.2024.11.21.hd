@@ -1,27 +1,18 @@
 #include <iostream>
 #include <list>
 #include <cassert>
+#include "urltypes.h"
 
-//using namespace std;
+class Shortener {
+	Shortener() = default;
+	virtual ShortUrl shorten (LongUrl) = 0;
+};
 
-
-typedef std::string ShortUrl ;
-typedef std::string LongUrl;
-
-class UrlObject {
-	private:
-		LongUrl longUrl;
-		ShortUrl shortUrl;
+class ShortenerAscii : public Shortener {
 	public:
-		UrlObject (const LongUrl long_url): longUrl{long_url} {
-			shortUrl = ShortUrl (std::string ("https://kurze.url").append(longUrl));  
-		} 
-		LongUrl getLongUrl () {
-			return longUrl;
-		}
-		ShortUrl getShortUrl () {
-			return shortUrl;
-		}
+	ShortUrl shorten (LongUrl long_url) {
+		return ShortUrl ("not yet implemented");
+	}
 };
 
 class Persistor {
