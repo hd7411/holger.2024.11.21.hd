@@ -1,4 +1,5 @@
 #include <iostream>
+#include <list>
 
 //using namespace std;
 
@@ -11,8 +12,8 @@ class UrlObject {
 		LongUrl longUrl;
 		ShortUrl shortUrl;
 	public:
-		UrlObject (const LongUrl longurl): longUrl{longUrl} {
-			shortUrl = ShortUrl ("https://kurze.url");
+		UrlObject (const LongUrl long_url): longUrl{long_url} {
+			shortUrl = ShortUrl (std::string ("https://kurze.url").append(longUrl));  
 		} 
 		LongUrl getLongUrl () {
 			return longUrl;
@@ -24,11 +25,19 @@ class UrlObject {
 
 class UrlManager {
 	private:
+		std::list <UrlObject*> urlObjectLst;
 
 	public:
 	UrlObject* convertLongUrlToShort (const LongUrl longUrl) {
-		return new UrlObject (longUrl);
+		urlObjectLst.push_back(new UrlObject (longUrl)) ;
+		return urlObjectLst.back();
 	}
+
+	UrlObject* convertShortUrlToLong (const LongUrl longUrl) {
+		urlObjectLst.push_back(new UrlObject (longUrl)) ;
+		return urlObjectLst.back();
+	}
+
 
 };
 
@@ -46,11 +55,5 @@ auto  main() -> int
 	UrlObject* urlObj = urlManager.convertLongUrlToShort(longUrl);
 	std::cout << "ShortUrl :" << urlObj->getShortUrl() << std::endl;
 
-/*
-	const int maximum = 10;
-	for(int i=0; i<maximum; i++) {
-		//std::cout << "Hello" << std::endl;
-	}
-*/
 	return 0;
 }
