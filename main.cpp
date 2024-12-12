@@ -23,6 +23,42 @@ class UrlObject {
 		}
 };
 
+class Persistor {
+public:
+  Persistor() = default;
+  virtual void addUrlObj(UrlObject*) =0;
+  virtual UrlObject* getUrlObjWithShortUrl(ShortUrl) = 0;
+  virtual UrlObject* getUrlObjWithLongUrl(LongUrl) = 0;
+  //virtual ~Persistor() = default;
+};
+
+class PersistorList: public Persistor {
+	private:
+		std::list <UrlObject*> urlObjectLst;
+	public:
+		PersistorList () {
+			urlObjectLst = {};
+		}
+		void addUrlObj (UrlObject* urlobj) {
+			urlObjectLst.push_back(urlobj) ;
+			std::cout << "PersistorList url obj list size = " << urlObjectLst.size() << std::endl;
+		}
+
+		UrlObject* getUrlObjWithShortUrl(ShortUrl short_url) {
+			std::cout << "Not Yet implemented" << std::endl;
+			return new UrlObject (LongUrl ("not yet Implemented"));
+
+		}
+		UrlObject* getUrlObjWithLongUrl(LongUrl long_url) {
+			
+			std::cout << "Not Yet implemented" << std::endl;
+			return new UrlObject (LongUrl ("not yet Implemented"));
+
+		}
+
+		
+};
+
 class UrlManager {
 	private:
 		std::list <UrlObject*> urlObjectLst;
@@ -46,8 +82,14 @@ class UrlManager {
 auto  main() -> int
 {
 
-	/*
-*/
+	// Persiror test & check
+	Persistor* testPersitor = new PersistorList();
+	UrlObject* tmpUrlObj = new UrlObject (LongUrl ("Test ULR"));
+	testPersitor->addUrlObj(tmpUrlObj);
+	auto aa = testPersitor->getUrlObjWithShortUrl(ShortUrl("Short URL"));
+
+
+	// basis Funktionalitaet & check
 	UrlManager urlManager = UrlManager ();
 
 	LongUrl longUrl = LongUrl ("https://lange.url");
