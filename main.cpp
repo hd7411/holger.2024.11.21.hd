@@ -89,7 +89,7 @@ class UrlManager {
 auto  main() -> int
 {
 
-	// Persiror test & check
+	// Persistor test & check
 	Persistor* testPersitor = new PersistorList();
 	UrlObject* tmpUrlObj = new UrlObject (LongUrl ("Test ULR"));
 	testPersitor->addUrlObj(tmpUrlObj);
